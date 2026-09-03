@@ -1,0 +1,46 @@
+:root {
+  --bg: #100e0a;
+  --surface: #1a1610;
+  --surface-alt: #221c14;
+  --ink: #f2ede2;
+  --ink-soft: #cabfa9;
+  --muted: #8a8271;
+  --accent: #e0a83c;
+  --accent-ink: #1a1610;
+  --border: rgba(242, 237, 226, 0.12);
+  --grid-line: rgba(242, 237, 226, 0.06);
+  --shadow: rgba(0, 0, 0, 0.45);
+
+  color-scheme: dark;
+  font-family: "Work Sans", ui-sans-serif, system-ui, sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3, h4 {
+  font-family: "Fraunces", ui-serif, Georgia, serif;
+  font-weight: 600;
+  margin: 0;
+}
+
+p {
+  margin: 0;
+  line-height: 1.55;
+}
+
+button {
+  font-family: inherit;
+}
+
+.mono {
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
+}
