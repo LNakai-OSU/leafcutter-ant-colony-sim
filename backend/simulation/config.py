@@ -1,70 +1,41 @@
 """
-Tunable parameters for the colony simulation.
+Fixed structural constants + the default scenario for the colony
+simulation. See README for the biology this is modeling and which numbers
+are real vs illustrative.
 
-Qualitative structure (caste roles, fungus mutualism, trail-pheromone
-recruitment, waste chambers kept apart from fungus chambers, claustral
-founding by a single queen) follows the general biology of leafcutter ants
-(genus Atta / Acromyrmex) as described in Holldobler & Wilson, "The
-Leafcutter Ants: Civilization by Instinct" (2010) and Wilson's earlier work
-on caste and division of labor in Atta (1980).
-
-The specific numbers below (decay rates, growth rates, caste-ratio curve)
-are NOT measured literature values - real colonies run into the millions
-of workers, which isn't renderable or simulatable in a browser at
-interactive speed. They're illustrative parameters chosen to reproduce the
-right qualitative dynamics (trail formation via reinforcement, caste ratio
-shifting as the colony matures, fungus garden as the growth-limiting
-resource) at a scale of dozens to a few hundred ants.
+`DEFAULT_SCENARIO` holds everything a caller can override per-simulation
+(see `scenario.py`); everything else here is nest/graph structure that
+doesn't vary between scenarios.
 """
 
-# --- Nest structure ---
+# --- Fixed nest structure ---
 NUM_FUNGUS_CHAMBERS = 6
 NUM_NURSERY_CHAMBERS = 3
 NUM_WASTE_CHAMBERS = 2
-NUM_JUNCTION_CHAMBERS = 4  # empty tunnel-junction chambers, no special role
+NUM_JUNCTION_CHAMBERS = 4
+NUM_TRUNK_JUNCTIONS = 3
 
-# --- Foraging trail structure ---
-NUM_TRUNK_JUNCTIONS = 3   # branch points between the entrance and the trees
-NUM_LEAF_TREES = 8
-TREE_MIN_RADIUS = 14.0    # trees are scattered this far from the entrance...
-TREE_MAX_RADIUS = 34.0    # ...out to this far (units are arbitrary "meters")
-
+TREE_MIN_RADIUS = 14.0
+TREE_MAX_RADIUS = 34.0
 TREE_MAX_BIOMASS = 100.0
 TREE_REGROWTH_PER_TICK = 0.6
-LEAF_CUT_AMOUNT = {
-    # how much biomass a single ant of this caste cuts per visit
-    "media": 6.0,
-    "minor": 2.0,
-}
 
-# --- Pheromone trail dynamics (ant-colony-optimization-style) ---
-PHEROMONE_EVAPORATION = 0.985  # multiplicative decay applied each tick
-PHEROMONE_DEPOSIT_SCALE = 0.35  # deposit = load * quality * this
+LEAF_CUT_AMOUNT = {"media": 6.0, "minor": 2.0}
 PHEROMONE_MIN = 0.01
-PHEROMONE_ALPHA = 2.0  # exponent biasing edge choice toward stronger trails
-EXPLORATION_FLOOR = 0.05  # ants still explore weak/unmarked edges sometimes
+PHEROMONE_DEPOSIT_SCALE = 0.35
 
-# --- Movement ---
-EDGE_SPEED = {
-    # fraction of an edge crossed per tick, by caste (bigger ants ~ faster)
-    "minim": 0.34,
-    "minor": 0.4,
-    "media": 0.32,
-    "major": 0.28,
-}
+EDGE_SPEED = {"minim": 0.34, "minor": 0.4, "media": 0.32, "major": 0.28}
 
-# --- Fungus garden / colony growth ---
 FUNGUS_MAX_HEALTH = 100.0
-FUNGUS_FEED_PER_LEAF_UNIT = 2.2   # fungus health gained per unit of leaf delivered
-FUNGUS_UPKEEP_PER_TICK = 0.05     # fungus health lost per tick per chamber
-BIRTH_FUNGUS_SURPLUS_THRESHOLD = 45.0  # avg fungus health needed to rear brood
-BIRTH_FUNGUS_COST = 5.0           # fungus health consumed per new ant reared
-BIRTH_CHANCE_PER_TICK = 0.35      # chance a birth is attempted when above threshold
-MAX_POPULATION = 400              # rendering/perf cap, not a biological limit
+FUNGUS_FEED_PER_LEAF_UNIT = 2.2
+FUNGUS_UPKEEP_PER_TICK = 0.05
+BIRTH_FUNGUS_SURPLUS_THRESHOLD = 45.0
+BIRTH_FUNGUS_COST = 5.0
+BIRTH_CHANCE_PER_TICK = 0.35
+MAX_POPULATION = 400  # rendering/perf cap, not a biological limit
 
-# --- Caste ratio as the colony matures (population-based, not age-based -
-# a simplification of real temporal + size polyethism) ---
-# (population_threshold, {caste: probability})
+# (population_threshold, {caste: probability}) - population-based stand-in
+# for real temporal + size polyethism (young colonies skew minim-heavy)
 CASTE_CURVE = [
     (0, {"minim": 0.7, "minor": 0.2, "media": 0.1, "major": 0.0}),
     (20, {"minim": 0.45, "minor": 0.25, "media": 0.25, "major": 0.05}),
@@ -73,5 +44,46 @@ CASTE_CURVE = [
 ]
 
 STARTING_COLONY = {"minim": 6, "minor": 2, "media": 2, "major": 0}
-
 CASTE_SIZE = {"minim": 0.35, "minor": 0.55, "media": 0.8, "major": 1.15}
+
+# --- Threat / variant tuning (only active when the scenario flag is set) ---
+DISEASE_GROWTH_RATE = 0.06        # logistic growth rate of untreated infection
+DISEASE_SPREAD_RATE = 0.04        # diffusion between adjacent fungus chambers
+DISEASE_DAMAGE_RATE = 1.2         # extra health loss per tick, scaled by infection level
+DISEASE_HYGIENE_REDUCTION = 0.006 # infection removed per fungus-tend visit (many tenders still add up)
+
+PHORID_YIELD_PENALTY = 0.45       # cut-amount multiplier on an un-escorted trip
+
+SEASON_LENGTH = 500                # ticks per full wet/dry cycle
+DROUGHT_MIN_MULTIPLIER = 0.25
+DROUGHT_MAX_MULTIPLIER = 1.4
+RAIN_CHANCE_PER_TICK = 0.02
+RAIN_DURATION = (5, 15)
+
+TREE_DEAD_THRESHOLD = 1.5
+TREE_DEATH_TICKS = 60               # consecutive ticks below threshold before permanent death
+
+PATCH_CLUSTER_COUNT = 3
+PATCH_JITTER_DEG = 18
+
+RIVAL_OFFSET = 20.0                  # distance between the two colonies' entrances
+CONTESTED_RADIUS = 20.0              # a tree within this range of a trunk cluster connects to it
+
+PLEOMETROSIS_WINDOW = 150            # ticks the multi-queen founding boost lasts
+
+# --- Default scenario: every field here can be overridden per-simulation ---
+DEFAULT_SCENARIO = {
+    "founding_queens": 1,           # pleometrosis: >1 cooperating queens boosts early growth
+    "pheromone_alpha": 2.0,         # exponent biasing trail choice toward stronger trails
+    "exploration_floor": 0.05,      # chance ants still sample weak/unmarked trails
+    "pheromone_evaporation": 0.985, # multiplicative decay applied each tick
+    "caste_override": None,         # fixed {caste: prob} dict, or None to use CASTE_CURVE
+    "num_leaf_trees": 8,
+    "tree_layout": "scattered",     # "scattered" | "patchy"
+    "chemical_defense": False,      # trees can reject a cutting attempt
+    "finite_trees": False,          # trees can be permanently exhausted
+    "disease_enabled": False,       # Escovopsis-style fungus garden pathogen
+    "phorid_flies_enabled": False,  # media foraging efficiency drops without a minim escort
+    "drought_enabled": False,       # seasonal regrowth cycle + rain pauses on foraging
+    "rival_colony": False,          # a second colony contesting the same trees
+}

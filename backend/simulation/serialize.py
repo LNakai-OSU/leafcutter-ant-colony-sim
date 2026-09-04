@@ -9,12 +9,16 @@ def serialize_graph(model):
             "kind": d["kind"],
             "domain": d["domain"],
             "pos": list(d["pos"]),
+            "colony": d.get("colony"),
         }
         if d["kind"] == "fungus":
             entry["health"] = round(d["health"], 1)
+            entry["infection"] = round(d.get("infection", 0.0), 3)
         if d["kind"] == "tree":
             entry["biomass"] = round(d["biomass"], 1)
             entry["quality"] = round(d["quality"], 2)
+            entry["acceptance"] = round(d.get("acceptance", 1.0), 2)
+            entry["dead"] = d.get("dead", False)
         if d["kind"] == "nursery":
             entry["brood"] = d["brood"]
         nodes.append(entry)
@@ -39,6 +43,7 @@ def serialize_ants(model):
             {
                 "id": a.unique_id,
                 "caste": a.caste,
+                "colony": a.colony,
                 "task": a.task,
                 "phase": a.phase.value if hasattr(a.phase, "value") else a.phase,
                 "node": a.node,
@@ -54,6 +59,10 @@ def serialize_state(model):
     nodes, edges = serialize_graph(model)
     return {
         "tick": model.tick,
+        "cfg": model.cfg,
+        "colonies": [c["id"] for c in model.colonies],
+        "season_multiplier": round(model.season_multiplier, 3),
+        "raining": model.raining,
         "nodes": nodes,
         "edges": edges,
         "ants": serialize_ants(model),

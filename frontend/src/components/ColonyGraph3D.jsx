@@ -2,11 +2,11 @@ import { useMemo, useState } from "react";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls, Line, Instances, Instance, Html } from "@react-three/drei";
 import * as THREE from "three";
-import { NODE_COLOR, NODE_RADIUS, CASTE_COLOR, fungusColor, treeColor } from "../theme";
+import { NODE_COLOR, NODE_RADIUS, CASTE_COLOR, COLONY_TINT, fungusColor, treeColor } from "../theme";
 
 function nodeColor(node) {
-  if (node.kind === "fungus") return fungusColor(node.health ?? 60);
-  if (node.kind === "tree") return treeColor(node.biomass ?? 60);
+  if (node.kind === "fungus") return fungusColor(node.health ?? 60, node.infection ?? 0);
+  if (node.kind === "tree") return treeColor(node.biomass ?? 60, node.dead);
   return NODE_COLOR[node.kind] || "#999999";
 }
 
@@ -18,38 +18,47 @@ function nodeRadius(node) {
   return NODE_RADIUS[node.kind] ?? 0.3;
 }
 
-function Nodes({ nodes, hovered, setHovered }) {
+function Nodes({ nodes, hovered, setHovered, rivalColony }) {
   return (
     <group>
       {nodes.map((n) => (
-        <mesh
-          key={n.id}
-          position={n.pos}
-          onPointerOver={(e) => {
-            e.stopPropagation();
-            setHovered(n);
-          }}
-          onPointerOut={() => setHovered((h) => (h && h.id === n.id ? null : h))}
-        >
-          <sphereGeometry args={[nodeRadius(n), 20, 20]} />
-          <meshStandardMaterial
-            color={nodeColor(n)}
-            emissive={nodeColor(n)}
-            emissiveIntensity={n.kind === "fungus" || n.kind === "queen" ? 0.5 : 0.15}
-            roughness={0.55}
-          />
+        <group key={n.id} position={n.pos}>
+          <mesh
+            onPointerOver={(e) => {
+              e.stopPropagation();
+              setHovered(n);
+            }}
+            onPointerOut={() => setHovered((h) => (h && h.id === n.id ? null : h))}
+          >
+            <sphereGeometry args={[nodeRadius(n), 20, 20]} />
+            <meshStandardMaterial
+              color={nodeColor(n)}
+              emissive={nodeColor(n)}
+              emissiveIntensity={n.kind === "fungus" || n.kind === "queen" ? 0.5 : 0.15}
+              roughness={0.55}
+            />
+          </mesh>
+          {rivalColony && n.colony && n.kind !== "tree" && (
+            <mesh>
+              <ringGeometry args={[nodeRadius(n) * 1.35, nodeRadius(n) * 1.5, 24]} />
+              <meshBasicMaterial color={COLONY_TINT[n.colony]} transparent opacity={0.6} side={THREE.DoubleSide} />
+            </mesh>
+          )}
           {hovered && hovered.id === n.id && (
             <Html distanceFactor={12} style={{ pointerEvents: "none" }}>
               <div className="node-tooltip">
                 <strong>{n.id}</strong>
                 <span>{n.kind}</span>
+                {n.colony && <span>colony {n.colony}</span>}
                 {n.health != null && <span>fungus health: {n.health}</span>}
-                {n.biomass != null && <span>leaf biomass: {n.biomass}</span>}
+                {n.infection > 0 && <span>infection: {(n.infection * 100).toFixed(0)}%</span>}
+                {n.biomass != null && <span>leaf biomass: {n.biomass}{n.dead ? " (dead)" : ""}</span>}
+                {n.acceptance != null && n.acceptance < 1 && <span>acceptance: {(n.acceptance * 100).toFixed(0)}%</span>}
                 {n.brood != null && <span>brood: {n.brood}</span>}
               </div>
             </Html>
           )}
-        </mesh>
+        </group>
       ))}
     </group>
   );
@@ -102,7 +111,7 @@ function Ants({ ants, nodeById }) {
   }, [ants, nodeById]);
 
   return (
-    <Instances limit={500}>
+    <Instances limit={900}>
       <sphereGeometry args={[0.13, 8, 8]} />
       <meshStandardMaterial />
       {ants.map((a, i) => (
@@ -112,19 +121,21 @@ function Ants({ ants, nodeById }) {
   );
 }
 
-export default function ColonyGraph3D({ nodes, edges, ants }) {
+export default function ColonyGraph3D({ nodes, edges, ants, raining, rivalColony }) {
   const [hovered, setHovered] = useState(null);
   const nodeById = useMemo(() => new Map(nodes.map((n) => [n.id, n])), [nodes]);
+  const bg = raining ? "#0b1016" : "#0d0b08";
 
   return (
     <div className="graph-canvas">
+      {raining && <div className="rain-badge">raining - foraging paused outdoors</div>}
       <Canvas camera={{ position: [15, 11, 17], fov: 48 }}>
-        <color attach="background" args={["#0d0b08"]} />
-        <fog attach="fog" args={["#0d0b08", 30, 90]} />
-        <ambientLight intensity={0.55} />
-        <directionalLight position={[15, 25, 10]} intensity={1.1} />
+        <color attach="background" args={[bg]} />
+        <fog attach="fog" args={[bg, 30, 90]} />
+        <ambientLight intensity={raining ? 0.4 : 0.55} />
+        <directionalLight position={[15, 25, 10]} intensity={raining ? 0.7 : 1.1} />
         <directionalLight position={[-15, -10, -10]} intensity={0.25} />
-        <Nodes nodes={nodes} hovered={hovered} setHovered={setHovered} />
+        <Nodes nodes={nodes} hovered={hovered} setHovered={setHovered} rivalColony={rivalColony} />
         <Edges edges={edges} nodeById={nodeById} />
         <Ants ants={ants} nodeById={nodeById} />
         <gridHelper args={[80, 40, "#33291a", "#201a10"]} position={[0, 0, 0]} />
