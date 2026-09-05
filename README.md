@@ -11,6 +11,19 @@ pheromone-trail foraging - rendered live as a 3D colored graph.
   (Three.js) for the 3D graph, [recharts](https://recharts.org/) for the
   population/fungus/foraging time series.
 
+## Design system: Material 3, as a dark instrument panel
+
+The control chrome (tabs, panels, buttons, sliders, cards) runs on Material
+3 - color roles generated algorithmically from the app's existing amber
+accent (`#E0A83C`) via Google's `@material/material-color-utilities` HCT
+tonal-spot algorithm, which is also where the sage-green tertiary color came
+from (derived, not picked). It ships dark-only on purpose: this is a
+simulation console, not a document, so there's no light theme to fall back
+to. Deliberately **not** touched: the 3D scene's node/caste/colony colors and
+the sweep heatmap's cell colors (`theme.js`, `SweepView.jsx`) - those are
+dataviz encodings that carry meaning (caste, health, infection), and
+repainting them to match a UI palette would break what they're showing.
+
 ## Running it
 
 ```bash

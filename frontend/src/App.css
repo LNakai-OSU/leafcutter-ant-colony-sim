@@ -20,60 +20,75 @@
 }
 
 .app-header .muted {
-  color: var(--ink-soft);
+  color: var(--md-sys-color-on-surface-variant);
   max-width: 68ch;
   margin-top: 8px;
   font-size: 0.95rem;
 }
 
+/* ---- Segmented tabs (M3) ---- */
 .tabs {
   display: flex;
-  gap: 6px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 10px;
+  gap: 2px;
+  background: var(--md-sys-color-surface-container);
+  border: 1px solid var(--md-sys-color-outline-variant);
+  border-radius: var(--md-sys-shape-corner-full);
   padding: 4px;
   flex-shrink: 0;
 }
 
 .tab-btn {
-  padding: 8px 16px;
-  border-radius: 7px;
+  padding: 8px 18px;
+  border-radius: var(--md-sys-shape-corner-full);
   border: none;
   background: transparent;
-  color: var(--ink-soft);
+  color: var(--md-sys-color-on-surface-variant);
   font-size: 0.85rem;
+  font-weight: 500;
   cursor: pointer;
+  position: relative;
+  isolation: isolate;
 }
+.tab-btn::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: currentColor;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+  z-index: -1;
+}
+.tab-btn:hover::before { opacity: 0.08; }
 
 .tab-btn-active {
-  background: var(--accent);
-  color: var(--accent-ink);
+  background: var(--md-sys-color-primary-container);
+  color: var(--md-sys-color-on-primary-container);
 }
 
 .error-banner {
-  background: rgba(201, 80, 63, 0.15);
-  border: 1px solid rgba(201, 80, 63, 0.4);
-  color: #f0b3a8;
+  background: var(--md-sys-color-error-container);
+  border: none;
+  color: var(--md-sys-color-on-error-container);
   padding: 10px 14px;
-  border-radius: 8px;
+  border-radius: var(--md-sys-shape-corner-small);
   font-size: 0.9rem;
 }
 
 .loading {
-  color: var(--muted);
+  color: var(--md-sys-color-on-surface-variant);
   padding: 60px 0;
   text-align: center;
 }
 
-/* Controls */
+/* ---- Controls (M3 filled card) ---- */
 .controls {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 12px;
+  background: var(--md-sys-color-surface-container);
+  border: none;
+  border-radius: var(--md-sys-shape-corner-medium);
   padding: 14px 18px;
 }
 
@@ -85,56 +100,90 @@
 }
 
 .controls-label {
-  color: var(--muted);
+  color: var(--md-sys-color-on-surface-variant);
   font-size: 0.78rem;
   margin-right: 4px;
 }
 
 .controls-tick {
   margin-left: auto;
-  color: var(--muted);
+  color: var(--md-sys-color-on-surface-variant);
   font-size: 0.85rem;
+  font-family: "IBM Plex Mono", ui-monospace, monospace;
 }
 
+/* ---- Buttons (M3) ---- */
 .btn {
-  padding: 9px 18px;
-  border-radius: 8px;
+  padding: 0 18px;
+  height: 38px;
+  border-radius: var(--md-sys-shape-corner-full);
   border: 1px solid transparent;
   font-size: 0.9rem;
   font-weight: 500;
   cursor: pointer;
+  position: relative;
+  isolation: isolate;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
 }
+.btn::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: currentColor;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+  z-index: -1;
+}
+.btn:hover::before { opacity: 0.08; }
 
 .btn-primary {
-  background: var(--accent);
-  color: var(--accent-ink);
+  background: var(--md-sys-color-primary);
+  color: var(--md-sys-color-on-primary);
 }
+.btn-primary:hover { box-shadow: var(--md-sys-elevation-1); }
 
 .btn-ghost {
   background: transparent;
-  border-color: var(--border);
-  color: var(--ink);
+  border-color: var(--md-sys-color-outline);
+  color: var(--md-sys-color-on-surface);
 }
 
 .btn-ghost:disabled {
-  opacity: 0.4;
+  opacity: 0.38;
   cursor: not-allowed;
 }
 
+/* ---- Chips (M3) ---- */
 .chip-btn {
-  padding: 6px 12px;
-  border-radius: 999px;
-  border: 1px solid var(--border);
-  background: transparent;
-  color: var(--ink-soft);
+  padding: 6px 14px;
+  border-radius: var(--md-sys-shape-corner-small);
+  border: 1px solid var(--md-sys-color-outline-variant);
+  background: var(--md-sys-color-surface-container-low);
+  color: var(--md-sys-color-on-surface-variant);
   font-size: 0.8rem;
   cursor: pointer;
+  position: relative;
+  isolation: isolate;
 }
+.chip-btn::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  background: var(--md-sys-color-on-surface-variant);
+  opacity: 0;
+  transition: opacity 0.15s ease;
+  z-index: -1;
+}
+.chip-btn:hover::before { opacity: 0.08; }
 
 .chip-btn-active {
-  background: var(--accent);
-  color: var(--accent-ink);
-  border-color: var(--accent);
+  background: var(--md-sys-color-secondary-container);
+  color: var(--md-sys-color-on-secondary-container);
+  border-color: transparent;
 }
 
 /* Layout */
@@ -147,10 +196,11 @@
 
 .graph-canvas {
   height: 640px;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 14px;
+  background: var(--md-sys-color-surface-container-low);
+  border: none;
+  border-radius: var(--md-sys-shape-corner-large);
   overflow: hidden;
+  box-shadow: var(--md-sys-elevation-1);
 }
 
 .side-panel {
@@ -161,39 +211,41 @@
 
 /* Stats */
 .stats-panel {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 14px;
+  background: var(--md-sys-color-surface-container-low);
+  border: none;
+  border-radius: var(--md-sys-shape-corner-large);
   padding: 16px 18px;
   display: flex;
   flex-direction: column;
   gap: 18px;
+  box-shadow: var(--md-sys-elevation-1);
 }
 
 .stats-block h3 {
   font-size: 0.85rem;
-  font-family: "Work Sans", sans-serif;
+  font-family: var(--md-ref-typeface-plain);
   font-weight: 600;
-  color: var(--ink-soft);
+  color: var(--md-sys-color-on-surface-variant);
   margin-bottom: 6px;
 }
 
 /* Legend */
 .legend {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 14px;
+  background: var(--md-sys-color-surface-container-low);
+  border: none;
+  border-radius: var(--md-sys-shape-corner-large);
   padding: 16px 18px;
   display: flex;
   flex-direction: column;
   gap: 16px;
+  box-shadow: var(--md-sys-elevation-1);
 }
 
 .legend-group h4 {
   font-size: 0.85rem;
-  font-family: "Work Sans", sans-serif;
+  font-family: var(--md-ref-typeface-plain);
   font-weight: 600;
-  color: var(--ink-soft);
+  color: var(--md-sys-color-on-surface-variant);
   margin-bottom: 8px;
 }
 
@@ -202,14 +254,16 @@
   align-items: center;
   gap: 8px;
   font-size: 0.82rem;
-  color: var(--ink-soft);
+  color: var(--md-sys-color-on-surface-variant);
   padding: 3px 0;
 }
 
+/* Legend swatches encode the 3D scene's actual node/caste colors (see
+   theme.js) - left untouched on purpose, they're data, not UI chrome. */
 .legend-swatch {
   width: 14px;
   height: 14px;
-  border-radius: 4px;
+  border-radius: var(--md-sys-shape-corner-extra-small);
   flex-shrink: 0;
 }
 
@@ -219,37 +273,40 @@
 
 .legend-note {
   font-size: 0.8rem;
-  color: var(--muted);
+  color: var(--md-sys-color-outline);
   line-height: 1.5;
 }
 
-/* 3D tooltip (rendered via drei Html) */
+/* 3D tooltip (rendered via drei Html) - M3 plain tooltip pattern: inverse
+   surface so it reads clearly floating over the scene regardless of what's
+   behind it. */
 .node-tooltip {
-  background: rgba(20, 17, 12, 0.92);
-  border: 1px solid var(--border);
-  border-radius: 8px;
+  background: var(--md-sys-color-inverse-surface);
+  border: none;
+  border-radius: var(--md-sys-shape-corner-extra-small);
   padding: 6px 10px;
   display: flex;
   flex-direction: column;
   gap: 2px;
   font-size: 0.75rem;
-  color: var(--ink);
+  color: var(--md-sys-color-inverse-on-surface);
   white-space: nowrap;
+  box-shadow: var(--md-sys-elevation-2);
 }
 
 .node-tooltip strong {
   font-family: "IBM Plex Mono", monospace;
-  color: var(--accent);
+  color: var(--md-sys-color-primary);
 }
 
 /* Footer */
 .footer {
   display: flex;
   justify-content: space-between;
-  color: var(--muted);
+  color: var(--md-sys-color-outline);
   font-size: 0.75rem;
   padding-top: 8px;
-  border-top: 1px solid var(--border);
+  border-top: 1px solid var(--md-sys-color-outline-variant);
   flex-wrap: wrap;
   gap: 8px;
 }
@@ -260,9 +317,9 @@
 }
 
 .scenario-panel {
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 12px;
+  background: var(--md-sys-color-surface-container);
+  border: none;
+  border-radius: var(--md-sys-shape-corner-medium);
   padding: 16px 18px;
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -273,7 +330,7 @@
   font-size: 0.78rem;
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  color: var(--muted);
+  color: var(--md-sys-color-outline);
   margin-bottom: 10px;
 }
 
@@ -293,25 +350,26 @@
   flex-direction: column;
   gap: 4px;
   font-size: 0.82rem;
-  color: var(--ink-soft);
+  color: var(--md-sys-color-on-surface-variant);
 }
 
 .field select,
 .field input[type="number"] {
-  background: var(--surface-alt);
-  border: 1px solid var(--border);
-  color: var(--ink);
-  border-radius: 6px;
+  background: var(--md-sys-color-surface-container-highest);
+  border: 1px solid var(--md-sys-color-outline);
+  color: var(--md-sys-color-on-surface);
+  border-radius: var(--md-sys-shape-corner-extra-small);
   padding: 6px 8px;
   font-size: 0.82rem;
+  font-family: var(--md-ref-typeface-plain);
 }
 
 .field input[type="range"] {
-  accent-color: var(--accent);
+  accent-color: var(--md-sys-color-primary);
 }
 
 .field-value {
-  color: var(--accent);
+  color: var(--md-sys-color-primary);
 }
 
 .field-bool {
@@ -322,7 +380,7 @@
 }
 
 .field-bool input {
-  accent-color: var(--accent);
+  accent-color: var(--md-sys-color-primary);
   width: 16px;
   height: 16px;
 }
@@ -346,14 +404,15 @@
   align-items: center;
   gap: 8px;
   font-size: 0.75rem;
-  color: var(--muted);
+  color: var(--md-sys-color-outline);
 }
 
 .caste-slider input {
-  accent-color: var(--accent);
+  accent-color: var(--md-sys-color-primary);
 }
 
-/* Rain badge on the 3D canvas */
+/* Rain badge on the 3D canvas - stays blue on purpose, it names an actual
+   weather event in the sim, not a UI accent. */
 .graph-canvas {
   position: relative;
 }
@@ -368,12 +427,12 @@
   color: #bfe0f2;
   font-size: 0.75rem;
   padding: 5px 10px;
-  border-radius: 999px;
+  border-radius: var(--md-sys-shape-corner-full);
 }
 
 /* A/B compare */
 .ab-intro {
-  color: var(--ink-soft);
+  color: var(--md-sys-color-on-surface-variant);
   font-size: 0.9rem;
   max-width: 80ch;
 }
@@ -383,19 +442,19 @@
   align-items: flex-end;
   gap: 12px;
   flex-wrap: wrap;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 12px;
+  background: var(--md-sys-color-surface-container);
+  border: none;
+  border-radius: var(--md-sys-shape-corner-medium);
   padding: 14px 18px;
   margin: 14px 0;
 }
 
 .ab-setup-row input[type="number"] {
   width: 90px;
-  background: var(--surface-alt);
-  border: 1px solid var(--border);
-  color: var(--ink);
-  border-radius: 6px;
+  background: var(--md-sys-color-surface-container-highest);
+  border: 1px solid var(--md-sys-color-outline);
+  color: var(--md-sys-color-on-surface);
+  border-radius: var(--md-sys-shape-corner-extra-small);
   padding: 6px 8px;
 }
 
@@ -426,19 +485,19 @@
   align-items: flex-end;
   gap: 14px;
   flex-wrap: wrap;
-  background: var(--surface);
-  border: 1px solid var(--border);
-  border-radius: 12px;
+  background: var(--md-sys-color-surface-container);
+  border: none;
+  border-radius: var(--md-sys-shape-corner-medium);
   padding: 14px 18px;
   margin: 14px 0 20px;
 }
 
 .sweep-controls input[type="number"] {
   width: 90px;
-  background: var(--surface-alt);
-  border: 1px solid var(--border);
-  color: var(--ink);
-  border-radius: 6px;
+  background: var(--md-sys-color-surface-container-highest);
+  border: 1px solid var(--md-sys-color-outline);
+  color: var(--md-sys-color-on-surface);
+  border-radius: var(--md-sys-shape-corner-extra-small);
   padding: 6px 8px;
 }
 
@@ -454,7 +513,7 @@
 
 .heatmap-corner {
   font-size: 0.68rem;
-  color: var(--muted);
+  color: var(--md-sys-color-outline);
   display: flex;
   align-items: center;
   padding: 4px 8px;
@@ -464,20 +523,22 @@
 .heatmap-col-label,
 .heatmap-row-label {
   font-size: 0.72rem;
-  color: var(--ink-soft);
+  color: var(--md-sys-color-on-surface-variant);
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 4px;
 }
 
+/* Heatmap cell backgrounds are a data-driven sequential color scale set
+   inline per-cell (see SweepView.jsx) - a dataviz encoding, left alone. */
 .heatmap-cell {
   min-width: 64px;
   min-height: 44px;
   display: flex;
   align-items: center;
   justify-content: center;
-  border-radius: 6px;
+  border-radius: var(--md-sys-shape-corner-extra-small);
   font-size: 0.75rem;
   color: #1a1610;
   font-weight: 600;
