@@ -11,6 +11,13 @@ pheromone-trail foraging - rendered live as a 3D colored graph.
   (Three.js) for the 3D graph, [recharts](https://recharts.org/) for the
   population/fungus/foraging time series.
 
+Requires a live Python backend (Mesa simulation + FastAPI), so there's no
+static GitHub Pages build - run it locally with the instructions below.
+
+## Screenshots
+
+![The 3D colony view - caste-colored ant agents on the pheromone trail graph, with the instrument-panel control chrome](screenshots/01-colony-view.png)
+
 ## Design system: Material 3, as a dark instrument panel
 
 The control chrome (tabs, panels, buttons, sliders, cards) runs on Material
